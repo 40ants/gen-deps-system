@@ -8,11 +8,13 @@ exec ros -Q -- $0 "$@"
   (ql:quickload '(defmain fset cl-strings)
                 :silent t))
 
-(defpackage :ros.script.dependencies
+
+(defpackage :ros.script.gen-deps-system
   (:use :cl)
   (:import-from #:defmain
-                #:defmain))
-(in-package :ros.script.dependencies)
+                #:defmain
+                #:print-help))
+(in-package :ros.script.gen-deps-system)
 
 
 ;; https://github.com/quicklisp/quicklisp-client/issues/134
@@ -89,7 +91,7 @@ exec ros -Q -- $0 "$@"
 
 
 (defun real-main (system)
-  (let* ((deps-system-name (format nil "~A-deps2" system))
+  (let* ((deps-system-name (format nil "~A-deps" system))
          (filename (format nil "~A.asd" deps-system-name))
          (deps (get-dependencies system))
          (deps (fset:convert 'list deps))
@@ -105,14 +107,16 @@ exec ros -Q -- $0 "$@"
       (let ((*print-pretty* t)
             (*print-miser-width* 10))
         (prin1 `(defsystem ,deps-system-name
+                  :class :package-inferred-system
                   :depends-on (,@deps))
               
                s)))))
 
 
-(defmain main ((system "System name")
-               (filename "Filename, like app-deps.asd"
-                         :default "app-deps2.asd"))
-  (real-main system filename))
+(defmain main (&rest system)
+  "Generates an asd file with a system depending on all dependencies of the given Common Lisp system."
+  (if system
+      (real-main (first system))
+      (print-help)))
 
 ;;; vim: set ft=lisp lisp:
