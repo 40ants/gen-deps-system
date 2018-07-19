@@ -72,8 +72,15 @@ exec ros -Q -- $0 "$@"
         ;; When we are collecting dependencies on another implementation,
         ;; we don't want to fail with an error because ASDF is unable to find
         ;; such dependencies
-        (let* ((system (ignore-errors
-                        (asdf:find-system current-name)))
+        (let* ((system (handler-bind ((asdf:system-out-of-date
+                                        (lambda (c)
+                                          (declare (ignorable c))
+                                          (invoke-restart 'continue)))
+                                      (asdf:bad-system-name
+                                        (lambda (c)
+                                          (declare (ignorable c))
+                                          (muffle-warning))))
+                         (asdf:find-system current-name)))
                (deps (when system
                        (asdf:component-sideway-dependencies system))))
           (dolist (dep deps)
