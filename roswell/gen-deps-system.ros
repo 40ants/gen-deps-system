@@ -97,15 +97,19 @@ exec ros -Q -- $0 "$@"
       (values processed))))
 
 
-(defun real-main (system)
+(defun real-main (system &key except)
+  (check-type except (or null list))
+  
   (let* ((deps-system-name (format nil "~A-deps" system))
          (filename (format nil "~A.asd" deps-system-name))
          (deps (get-dependencies system))
          (deps (fset:convert 'list deps))
          (deps (sort deps #'string<))
          (deps (remove-if (lambda (name)
-                            (cl-strings:starts-with name
-                                                    system))
+                            (let ((primary-name (asdf:primary-system-name name)))
+                              (member primary-name (list* system
+                                                          except)
+                                      :test #'string-equal)))
                           deps)))
     (format t "System: ~A, filename: ~A~%" system filename)
     
@@ -120,10 +124,12 @@ exec ros -Q -- $0 "$@"
                s)))))
 
 
-(defmain main (&rest system)
+(defmain main ((except "A system to exclude from dependencies")
+               &rest system)
   "Generates an asd file with a system depending on all dependencies of the given Common Lisp system."
   (if system
-      (real-main (first system))
+      (real-main (first system) :except (when except
+                                          (list except)))
       (print-help)))
 
 ;;; vim: set ft=lisp lisp:

@@ -2,6 +2,15 @@
  ChangeLog
 ===========
 
+0.3.0
+=====
+
+Now command can accept additional ``--except`` parameter to exclude some
+system from the dependencies list.
+
+Also, now during exclusion, system primary names are checked agains a
+system from input arguments and ``--except`` argument. Previously there
+was a check if one strings has a prefix.
 
 0.2.0
 =====
