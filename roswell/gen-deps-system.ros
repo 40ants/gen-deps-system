@@ -114,7 +114,7 @@ exec ros -Q -- $0 "$@"
     (format t "System: ~A, filename: ~A~%" system filename)
     
     (alexandria:with-output-to-file (s filename
-                                       :if-exists :supersede)
+                                       :if-exists :overwrite)
       (let ((*print-pretty* t)
             (*print-miser-width* 10))
         (prin1 `(defsystem ,deps-system-name
