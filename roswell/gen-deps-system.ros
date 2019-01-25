@@ -124,12 +124,12 @@ exec ros -Q -- $0 "$@"
                s)))))
 
 
-(defmain main ((except "A system to exclude from dependencies")
+(defmain main ((except "A comma-separated systems to exclude from dependencies")
                &rest system)
   "Generates an asd file with a system depending on all dependencies of the given Common Lisp system."
   (if system
       (real-main (first system) :except (when except
-                                          (list except)))
+                                          (cl-strings:split except ",")))
       (print-help)))
 
 ;;; vim: set ft=lisp lisp:

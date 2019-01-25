@@ -2,6 +2,11 @@
  ChangeLog
 ===========
 
+0.4.0
+=====
+
+Argument ``--except`` now can accept a comma-separated systems list.
+
 0.3.0
 =====
 
