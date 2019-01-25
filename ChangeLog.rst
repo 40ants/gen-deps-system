@@ -2,10 +2,17 @@
  ChangeLog
 ===========
 
+0.4.1 (2019-01-25)
+==================
+
+Argument ``--except`` now can accept a comma-separated systems list.
+
 0.4.0
 =====
 
-Argument ``--except`` now can accept a comma-separated systems list.
+Overwrite file instead of supersede it. This allows to run
+``gen-deps-system`` inside a docker container where files ``app.asd``
+and ``app-deps.asd`` are mounted as volumes.
 
 0.3.0
 =====

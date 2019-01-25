@@ -1,6 +1,6 @@
 (defsystem "gen-deps-system"
   :class :package-inferred-system
-  :version "0.1.0"
+  :version "0.4.1"
   :author "Alexander Artemenko"
   :license "BSD 3-Clause"
   :depends-on ()
