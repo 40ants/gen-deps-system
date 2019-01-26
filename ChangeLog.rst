@@ -2,6 +2,11 @@
  ChangeLog
 ===========
 
+0.4.2 (2019-01-26)
+==================
+
+Fixed error in case when ``app-deps.asd`` file is absent.
+
 0.4.1 (2019-01-25)
 ==================
 
