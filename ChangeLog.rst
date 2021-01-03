@@ -2,6 +2,13 @@
  ChangeLog
 ===========
 
+0.4.3 (2020-01-03)
+==================
+
+Fixed error when ``app-deps.asd`` already exists and new
+version is shorter. Previously, file was overwritten and
+its tail become corrupted,
+
 0.4.2 (2019-01-26)
 ==================
 

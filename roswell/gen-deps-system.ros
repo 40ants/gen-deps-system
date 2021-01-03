@@ -112,9 +112,8 @@ exec ros -Q -- $0 "$@"
                                       :test #'string-equal)))
                           deps)))
     (format t "System: ~A, filename: ~A~%" system filename)
-    
     (alexandria:with-output-to-file (s filename
-                                       :if-exists :overwrite
+                                       :if-exists :supersede
                                        :if-does-not-exist :create)
       (let ((*print-pretty* t)
             (*print-miser-width* 10))
