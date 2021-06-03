@@ -116,7 +116,7 @@ exec ros -Q -- $0 "$@"
                                        :if-exists :supersede
                                        :if-does-not-exist :create)
       (let ((*print-pretty* t)
-            (*print-miser-width* 10))
+            (*print-right-margin* 1))
         (prin1 `(defsystem ,deps-system-name
                   :class :package-inferred-system
                   :depends-on (,@deps))

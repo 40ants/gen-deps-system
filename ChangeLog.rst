@@ -2,6 +2,12 @@
  ChangeLog
 ===========
 
+0.5.0 (2021-06-03)
+==================
+
+Now utility formats each dependency on it's own line,
+making diffs more useful.
+
 0.4.4 (2021-06-02)
 ==================
 
