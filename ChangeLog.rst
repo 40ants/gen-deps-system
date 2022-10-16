@@ -2,6 +2,12 @@
  ChangeLog
 ===========
 
+0.6.0 (2022-10-16)
+==================
+
+All code for generation was moved to the lisp package. Now you can use
+``(gen-deps-system:generate :my-system)``.
+
 0.5.0 (2021-06-03)
 ==================
 
