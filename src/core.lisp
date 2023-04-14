@@ -1,6 +1,7 @@
 (uiop:define-package #:gen-deps-system
   (:use #:cl)
   (:import-from #:fset)
+  (:import-from #:alexandria)
   (:nicknames #:gen-deps-system/core)
   (:export
    #:generate))
