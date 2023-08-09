@@ -3,7 +3,6 @@
 #|
 exec ros -Q -- $0 "$@"
 |#
-(push "~/projects/gen-deps-system/" asdf:*central-registry*)
 (progn ;;init forms
   (ros:ensure-asdf)
   (ql:quickload 'gen-deps-system/main
