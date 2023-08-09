@@ -3,27 +3,17 @@
 #|
 exec ros -Q -- $0 "$@"
 |#
+(push "~/projects/gen-deps-system/" asdf:*central-registry*)
 (progn ;;init forms
   (ros:ensure-asdf)
-  (ql:quickload '(defmain gen-deps-system cl-strings)
+  (ql:quickload 'gen-deps-system/main
                 :silent t))
 
 
 (defpackage :ros.script.gen-deps-system
   (:use :cl)
-  (:import-from #:defmain
-                #:defmain
-                #:print-help))
-(in-package :ros.script.gen-deps-system)
-
-
-(defmain (main) ((except "A comma-separated systems to exclude from dependencies")
-                 &rest system)
-  "Generates an asd file with a system depending on all dependencies of the given Common Lisp system."
-  (if system
-      (gen-deps-system:generate
-       (first system) :except (when except
-                                (cl-strings:split except ",")))
-      (print-help)))
+  (:import-from #:gen-deps-system/main
+                #:main))
+(in-package #:ros.script.gen-deps-system)
 
 ;;; vim: set ft=lisp lisp:

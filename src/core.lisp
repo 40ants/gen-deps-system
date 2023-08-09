@@ -12,11 +12,31 @@
 ;; https://www.reddit.com/r/Common_Lisp/comments/82wiyt/how_to_collect_all_asdf_dependencies_for/
 
 (defun get-dependencies (system)
-  (labels ((normalize (name)
+  (labels ((ensure-primary (name)
+             (check-type name string)
+             (let* ((asdf-system (asdf:find-system name)))
+               (typecase asdf-system
+                 ;; We don't want to list all subsystems of
+                 ;; package inferred system and collect only primary systems instead.
+                 ;; Moreover, Quicklisp often is unable to download a subsystem
+                 ;; and using primary system helps to download all system files
+                 ;; making subsystems visible for ASDF.
+                 (asdf/package-inferred-system:package-inferred-system
+                  (asdf:primary-system-name asdf-system))
+                 ;; This kind of system we ignore, because they can't
+                 ;; be installed using Quicklisp.
+                 (asdf/operate:require-system
+                  nil)
+                 ;; Usual asdf systems are listed as is.
+                 (t
+                  name))))
+           (normalize (name)
              (etypecase name
                (null) ;; Name can be a nil. In this case we have to return it as is.
-               (string (string-downcase name))
-               (symbol (normalize (symbol-name name)))
+               (string
+                (string-downcase name))
+               (symbol
+                (normalize (symbol-name name)))
                (list
                 (let ((dep-type (first name))
                       (supported-dep-types (list :version :feature :require)))
@@ -40,6 +60,7 @@
                      (:require (second name)))))))))
     
     (let ((processed (fset:set))
+          (results (fset:set))
           (queue (fset:set (normalize system))))
       
       (do ((current-name (fset:arb queue)
@@ -54,6 +75,11 @@
         ;; And put it into the "processed" pool
         (setf processed
               (fset:with processed current-name))
+
+        (let ((result (ensure-primary current-name)))
+          (when result
+            (setf results
+                  (fset:with results result))))
         
         ;; And add it's dependencies which aren't processed or in the queue already
         ;; Sometimes system can't be found because itself depends on some feature,
@@ -85,7 +111,7 @@
                 (setf queue
                       (fset:with queue normalized-dep)))))))
 
-      (values processed))))
+      (values results))))
 
 
 (defun generate (system &key except)
@@ -101,22 +127,28 @@
                                                   (format nil "~A.asd" deps-system-name)))
          (deps (get-dependencies system))
          (deps (fset:convert 'list deps))
-         (deps (sort deps #'string<))
          (deps (remove-if (lambda (name)
                             (let ((primary-name (asdf:primary-system-name name)))
                               (member primary-name (list* system
                                                           except)
                                       :test #'string-equal)))
-                          deps)))
+                          deps))
+         (deps (sort deps #'string<)))
     (format t "System: ~A, filename: ~A~%" system filename)
     (alexandria:with-output-to-file (s filename
                                        :if-exists :supersede
                                        :if-does-not-exist :create)
-      (let ((*print-pretty* t)
-            (*print-right-margin* 1)
+      (let (
+            ;; (*print-pretty* t)
+            ;; (*print-right-margin* 1)
             (*package* (find-package "ASDF")))
-        (prin1 `(asdf:defsystem ,deps-system-name
-                  :class :package-inferred-system
-                  :depends-on (,@deps))
-              
-               s)))))
+        (write
+         `(asdf:defsystem ,deps-system-name
+            :class :package-inferred-system
+            :depends-on (,@deps))
+         :stream s
+         :pretty t
+         :right-margin 1
+         :case :downcase)
+
+        (values)))))

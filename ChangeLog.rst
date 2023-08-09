@@ -2,6 +2,12 @@
  ChangeLog
 ===========
 
+0.7.0 (2022-08-09)
+==================
+
+Now all ``require`` dependencies are ignored and for package inferred systems only
+their primary system names are collected.
+
 0.6.0 (2022-10-16)
 ==================
 
