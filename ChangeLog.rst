@@ -2,6 +2,12 @@
  ChangeLog
 ===========
 
+0.8.0 (2025-05-25)
+==================
+
+Dependencies are not sorted anymore and first the leaf dependencies are listed
+then the direct dependencies of the given system are going.
+
 0.7.0 (2022-08-09)
 ==================
 
